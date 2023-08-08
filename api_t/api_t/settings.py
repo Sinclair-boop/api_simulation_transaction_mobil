@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%ixzgw*1ypr_109w6%6pv5q4$n#pu6)eobv9=g2!qi@!+q6bec
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.160.154']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'transaction',
 ]
@@ -44,11 +45,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # middleware exeptionnel
+    'transaction.transaction_logger.TransactionLoggerMiddleware',
 ]
 
 ROOT_URLCONF = 'api_t.urls'
@@ -56,7 +60,7 @@ ROOT_URLCONF = 'api_t.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,7 +82,7 @@ WSGI_APPLICATION = 'api_t.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'dbapi2',
+       'NAME': 'dbdb',
        'USER': 'Sinclair',
        'PASSWORD': '1234',
        'HOST': 'localhost',
@@ -129,3 +133,29 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Exemple de configuration pour un serveur SMTP Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'bienvuemarketboutique@gmail.com'
+EMAIL_HOST_PASSWORD = 'dfoewshdqanjlbfl'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'bienvuemarketboutique@gmail.com'
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3030',
+]
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': [
+#         'rest_framework.renderers.JSONRenderer',
+#     ],
+#     'DEFAULT_PARSER_CLASSES': [
+#         'rest_framework.parsers.JSONParser',
+#     ],
+#     'DEFAULT_AUTHENTICATION_CLASSES' : [
+#         'rest_framework.authentication.BasicAuthentication', 'rest_framework.authentication.SessionAuthentication',
+#     ]
+#
+# }

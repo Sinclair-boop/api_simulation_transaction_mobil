@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmation de processus</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Confirmation de processus</h1>
+
+    <form id="responseForm">
+        {% csrf_token %}
+        Valider:<input type="radio" name="response" value="1">
+        Annuler:<input type="radio" name="response" value="0">
+        <button type="submit">Envoyer la réponse</button>
+    </form>
+
+    <p>Merci de répondre à cette demande.</p><br>
+    <p>Utilisateur: {{ nom }},<br> Telephone: {{ telephone }},<br> Solde: {{ solde }}F,<br>  a essayer d'effectuer un retrait de {{ montant }}F </p>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script>
+       document.getElementById('responseForm').addEventListener('submit', function(event) {
+        event.preventDefault();  // Empêche la soumission du formulaire par défaut
+      var radioButtons = document.querySelectorAll('input[name="response"]');
+      var selectedValue;
+      radioButtons.forEach(function(button) {
+        if (button.checked) {
+          selectedValue = button.value;
+        }
+      });
+      console.log('Valeur sélectionnée :', selectedValue);
+      //console.log('Valeur sélectionnée :', formData);
+        // Envoie la réponse via une requête HTTP POST à l'URL de réponse
+        var request = new XMLHttpRequest();
+        //http://192.168.146.154:8000
+        request.open('POST', 'http://192.168.160.154:8000/api/isfraud/', true);
+        request.setRequestHeader("Content-Type", 'application/json');
+                // Gestion de l'événement de réponse
+                request.onreadystatechange = function() {
+          if (request.readyState === XMLHttpRequest.DONE && request.status === 201) {
+            alert('Réponse envoyée avec succès');
+            var response = request.responseText;
+            //var selectedValue = JSON.parse(request.responseText);
+            // Traitement de la réponse
+          }
+          else {
+            alert('Etez-vous sur de votre choix?');
+            //var selectedValue = JSON.parse(request.responseText);
+
+          }
+        };
+        // Envoi de la requête avec les données du formulaire
+            request.send(JSON.stringify({'key':selectedValue}));
+            //request.send(new URLSearchParams(formData).toString());
+      });
+
+    </script>
+</body>
+</html>
